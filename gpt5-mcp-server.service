@@ -1,0 +1,27 @@
+[Unit]
+Description=GPT-5 MCP Server for Antigravity IDE
+Documentation=https://github.com/your-repo/gpt5-mcp-server
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=/home/%i/project/lob-brain-update/gpt5-mcp-server
+EnvironmentFile=/home/%i/project/lob-brain-update/gpt5-mcp-server/.env
+ExecStart=/usr/bin/node /home/%i/project/lob-brain-update/gpt5-mcp-server/dist/index.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=gpt5-mcp-server
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/%i/project/lob-brain-update/gpt5-mcp-server/logs
+ReadWritePaths=/home/%i/project/lob-brain-update/gpt5-mcp-server/cache
+
+[Install]
+WantedBy=multi-user.target

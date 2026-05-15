@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "gpt5-coding": {
+      "command": "gpt5-mcp-server",
+      "env": {
+        "GPT5_API_URL": "https://your-api-endpoint.com/v1",
+        "GPT5_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}

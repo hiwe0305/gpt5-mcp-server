@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  gpt5-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gpt5-mcp-server
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - GPT5_API_KEY=${GPT5_API_KEY}
+      - GPT5_API_URL=${GPT5_API_URL}
+    volumes:
+      # Mount logs directory
+      - ./logs:/app/logs
+      # Mount cache directory (optional)
+      - ./cache:/app/cache
+    networks:
+      - gpt5-network
+    # Use host network mode for MCP stdio communication
+    network_mode: host
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "node", "-e", "console.log('healthy')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+networks:
+  gpt5-network:
+    driver: bridge
