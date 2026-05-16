@@ -72,10 +72,17 @@ case $choice in
             fi
         fi
         
-        # Check if docker-compose is installed
-        if ! command -v docker-compose &> /dev/null; then
+        # Check if docker-compose is installed (prefer v2 plugin, fallback to standalone)
+        if docker compose version &> /dev/null; then
+            DOCKER_COMPOSE="docker compose"
+            print_info "Sử dụng: Docker Compose v2"
+        elif command -v docker-compose &> /dev/null; then
+            DOCKER_COMPOSE="docker-compose"
+            print_info "Sử dụng: docker-compose (v1)"
+        else
             print_error "docker-compose chưa được cài đặt"
             echo "Cài đặt: sudo apt-get install docker-compose"
+            echo "Hoặc nâng cấp lên Docker Compose v2: docker compose (tích hợp trong Docker CLI)"
             exit 1
         fi
         
@@ -102,28 +109,28 @@ ENVEOF
         # Build and start
         echo ""
         print_info "Building Docker image..."
-        docker-compose build
+        $DOCKER_COMPOSE build
         
         print_info "Starting server..."
-        docker-compose up -d
+        $DOCKER_COMPOSE up -d
         
         sleep 3
         
         # Check status
-        if docker-compose ps | grep -q "Up"; then
+        if $DOCKER_COMPOSE ps 2>/dev/null | grep -q "Up\|running"; then
             print_success "Server đã chạy thành công!"
             echo ""
             echo "Kiểm tra logs:"
-            echo "  docker-compose logs -f"
+            echo "  $DOCKER_COMPOSE logs -f"
             echo ""
             echo "Quản lý server:"
-            echo "  docker-compose ps       # Xem status"
-            echo "  docker-compose restart  # Restart"
-            echo "  docker-compose stop     # Stop"
-            echo "  docker-compose start    # Start"
+            echo "  $DOCKER_COMPOSE ps       # Xem status"
+            echo "  $DOCKER_COMPOSE restart  # Restart"
+            echo "  $DOCKER_COMPOSE stop     # Stop"
+            echo "  $DOCKER_COMPOSE start    # Start"
         else
             print_error "Server không khởi động được"
-            echo "Xem logs: docker-compose logs"
+            echo "Xem logs: $DOCKER_COMPOSE logs"
             exit 1
         fi
         

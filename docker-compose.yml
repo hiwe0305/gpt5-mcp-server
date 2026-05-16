@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   gpt5-mcp-server:
     build:
@@ -13,13 +11,13 @@ services:
       - NODE_ENV=production
       - GPT5_API_KEY=${GPT5_API_KEY}
       - GPT5_API_URL=${GPT5_API_URL}
+    stdin_open: true # Keep stdin open so MCP server doesn't exit
+    tty: true        # Allocate a pseudo-TTY
     volumes:
       # Mount logs directory
       - ./logs:/app/logs
       # Mount cache directory (optional)
       - ./cache:/app/cache
-    networks:
-      - gpt5-network
     # Use host network mode for MCP stdio communication
     network_mode: host
     logging:
@@ -33,7 +31,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 5s
-
-networks:
-  gpt5-network:
-    driver: bridge

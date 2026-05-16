@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "gpt5": {
+      "command": "docker",
+      "args": [
+        "exec",
+        "-i",
+        "gpt5-mcp-server",
+        "node",
+        "dist/index.js"
+      ]
+    }
+  }
+}
